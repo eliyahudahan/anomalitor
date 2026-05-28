@@ -1,0 +1,19 @@
+# התעלמות מקבצי סביבה
+.env
+.env.local
+.env.*
+
+# התעלמות מתיקיות ומקבצי מטמון (Cache)
+cache/
+.cache/
+Thumbs.db
+
+# קבצי Python מיותרים
+__pycache__/
+*.pyc
+venv/
+.venv/data/nasa/raw/archive.zip
+data/nasa/raw/1st_test/
+data/nasa/raw/2nd_test/
+data/nasa/raw/3rd_test/
+data/nasa/raw/archive.zip
