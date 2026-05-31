@@ -5,11 +5,21 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
-DB_USER = os.getenv("DB_USER", "framg")
+# חובה: כל המשתנים חייבים להיות מוגדרים ב-.env
+DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_NAME = os.getenv("DB_NAME", "anomalitor_db")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
+
+# בדיקה ששום משתנה לא חסר
+missing = []
+for var in ["DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME"]:
+    if not os.getenv(var):
+        missing.append(var)
+
+if missing:
+    raise ValueError(f"❌ Missing environment variables: {', '.join(missing)}. Check .env file.")
 
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
