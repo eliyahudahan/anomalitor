@@ -34,3 +34,18 @@ RF פשוט יותר, מהיר יותר, והתמודד טוב עם הדאטה �
 - threshold = 95th percentile of residuals (normal data).
 - תוצאות: recall = 1.00 (זיהינו את כל החריגים), precision = 0.27 (הרבה אזעקות שווא).
 - F1 = 0.43 – נמוך בגלל ה-precision הנמוך, אבל ב-Predictive Maintenance מעדיפים אזעקת שווא על פני החמצת כשל.
+
+### config.py – תפקידים
+- **engine**: מנהל חיבורים ל-DB (connection pool).
+- **SessionLocal**: מפעל ליצירת Sessions (עסקאות).
+- **get_db**: Dependency Injection – יוצר Session, מחזיר לפונקציה, וסוגר בסוף.
+- **yield**: מחזיר ערך, מאפשר לחזור לפונקציה אחרי שהיא מסתיימת (ניהול משאבים).
+
+"SQLAlchemy – מתרגם Python ↔ SQL.
+Base – מחזיק את הגדרות הטבלאות.
+__tablename__ – שם הטבלה ב-DB.
+Column – עמודה.
+Integer, String, Float, DateTime – סוגי הנתונים.
+nullable=False – חובה.
+default – ברירת מחדל."
+
