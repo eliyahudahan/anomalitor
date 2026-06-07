@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # טעינת המודל
-model_path = Path("/home/framg/dev/anomalitor/models/rf_residual.pkl")
+model_path = Path("/app/models/rf_residual.pkl")
 with open(model_path, 'rb') as f:
     model = pickle.load(f)
 
@@ -69,6 +69,7 @@ def save_prediction_to_db(rms_b1, rms_b3, actual_ratio, predicted_ratio, residua
         ratio=actual_ratio,
         predicted_ratio=predicted_ratio,
         residual=residual,
+         is_anomaly=1 if is_anomaly else 0,   # ← תיקון! שומר גם את האמת
         detected_anomaly=1 if is_anomaly else 0
     )
     db.add(record)

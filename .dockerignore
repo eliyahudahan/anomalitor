@@ -7,5 +7,4 @@ data/nasa/raw/archive.zip
 data/nasa/raw/1st_test/
 data/nasa/raw/2nd_test/
 data/nasa/raw/3rd_test/
-*.pkl
 .gitkeep
