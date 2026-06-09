@@ -130,3 +130,58 @@ RF פשוט יותר, מהיר יותר, והתמודד טוב עם הדאטה �
 ---
 
 **סוף התובנות (נכון ל-02.06.2026, שעה 13:00).**
+
+07.06.2026 – Streamlit Dashboard
+יצרתי dashboard.py עם Streamlit.
+
+חיבור ל-DB: psycopg2.connect(host="db", database="anomalitor_db", user="framg", password=...)
+
+קריאת נתונים: pd.read_sql("SELECT * FROM bearing_records", conn)
+
+גרף: px.line(df, x='timestamp', y='ratio', color='detected_anomaly') – קו כחול (תקין), קו אדום (אנומליה).
+
+כרטיסים: st.metric("Total Predictions", len(df)) ו-st.metric("Anomalies Detected", len(anomalies)).
+
+07.06.2026 – entrypoint.sh
+#!/bin/sh – מגדיר shell.
+
+set -e – עוצר על שגיאה.
+
+sleep 5 – מחכה שה-DB יעלה.
+
+python -c "from src.database.config import engine; from src.database.models import Base; Base.metadata.create_all(bind=engine)" – יוצר טבלאות.
+
+exec uvicorn app.main:app --host 0.0.0.0 --port 8000 – מפעיל את FastAPI (מחליף תהליך).
+
+08.06-09.06.2026 – הבנת FastAPI ו-Pydantic
+FastAPI – מסגרת לבניית API. מגדיר endpoints (@app.post("/predict")), מנתב בקשות, מפעיל פונקציות.
+
+Pydantic – ספרייה לבדיקת JSON. מגדיר תבנית (class BearingData(BaseModel)). FastAPI משתמש בה אוטומטית.
+
+Uvicorn – שרת רשת. טוען את FastAPI (app.main:app) ומפעיל אותו.
+
+curl – כלי לשליחת בקשות HTTP מהטרמינל. מדמה לקוח, בודק API, שולח נתונים.
+
+08.06-09.06.2026 – הבנת docker-compose.yml
+שירות db: PostgreSQL, עם healthcheck ו-volumes.
+
+שירות api: FastAPI, רץ באמצעות entrypoint.sh, תלוי ב-db (service_healthy).
+
+שירות streamlit: Dashboard, רץ עם Streamlit, תלוי ב-api.
+
+רשת Docker: כל שירות יכול לפנות לאחר בשם השירות (למשל host="db").
+
+ports: חושף פורט מהקונטיינר למחשב המארח (למשל 8000:8000).
+
+environment: מעביר משתני סביבה (מ-.env).
+
+📊 אבני דרך מעודכנות (נכון ל-09.06)
+תאריך	אבן דרך
+25.05	השוואת מודלים – RF ניצח (99.54%)
+27.05	Anomaly Detection (recall=1.00)
+31.05	FastAPI + PostgreSQL – API חי
+01.06	הבנת מודולי התשתית
+02.06	Docker – docker-compose up
+07.06	Streamlit Dashboard + entrypoint.sh
+08-09.06	הבנת FastAPI, Pydantic, Uvicorn, curl, docker-compose.yml
+
