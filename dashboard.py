@@ -49,13 +49,13 @@ if len(df) > 0:
 # Precision-Recall Curve (Lead Time)
 # ================================
 st.subheader("⚖️ Threshold Optimization (Precision-Recall)")
-st.image("precision_recall_curve.png", caption="Precision-Recall Trade-off", use_container_width=False)
+st.image("precision_recall_curve.png", caption="Precision-Recall Trade-off")
 
 # ================================
 # SHAP Feature Importance
 # ================================
 st.subheader("🧠 Model Explainability (SHAP)")
-st.image("shap_summary.png", caption="Feature Impact on Prediction", use_container_width=False)
+st.image("shap_summary.png", caption="Feature Impact on Prediction")
 
 # ================================
 # FFT Analysis – Healthy vs Failed
@@ -68,16 +68,37 @@ with col4:
     st.image("fft_failed.png", caption="Failed Bearing (End of Test)")
 
 # ================================
+# מיקום הכשל – BPFI (Inner Race)
+# ================================
+st.subheader("📍 Failure Location: Bearing 3 – Inner Race Defect")
+st.markdown("""
+**NASA IMS Dataset Documentation:**  
+*"At the end of the test-to-failure experiment, **inner race defect occurred in bearing 3**."*
+
+**Why BPFI ~300 Hz?**  
+- Rotational speed: 2000 RPM = 33.33 Hz  
+- Number of balls (Rexnord ZA-2115): ≈ 15  
+- **BPFI ≈ 0.6 × RPM_Hz × n_balls = 0.6 × 33.33 × 15 ≈ 300 Hz**
+
+**FFT Evidence:**  
+- Healthy bearing (Start): No peak at 300 Hz  
+- Failed bearing (End): **Clear peak at ~300 Hz** → confirms inner race failure
+
+**Conclusion:** The model detects both *that* a failure occurred and *where* (inner race).
+""")
+
+
+# ================================
 # Monte Carlo Stability
 # ================================
 st.subheader("🎲 Monte Carlo Simulation (Stability Test)")
-st.image("monte_carlo_boxplots.png", caption="Precision & Recall Distribution (1000 iterations)", use_container_width=False)
+st.image("monte_carlo_boxplots.png", caption="Precision & Recall Distribution (1000 iterations)")
 
 # ================================
 # Threshold Tradeoff (FP vs FN)
 # ================================
 st.subheader("📊 False Positives vs False Negatives by Threshold")
-st.image("threshold_tradeoff_full.png", caption="FP/FN vs Threshold (Full Dataset)", use_container_width=False)
+st.image("threshold_tradeoff_full.png", caption="FP/FN vs Threshold (Full Dataset)")
 
 # ================================
 # הסבר על הסף הנבחר

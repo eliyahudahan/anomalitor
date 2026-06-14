@@ -10,6 +10,8 @@ COPY ./src /app/src
 COPY ./models /app/models
 COPY ./dashboard.py /app/
 COPY entrypoint.sh /app/
+COPY *.png /app/
+
 RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
