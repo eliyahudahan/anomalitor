@@ -1,4 +1,3 @@
-```markdown
 # 🔧 Anomalitor – Bearing Health Monitoring
 
 **Predictive Maintenance System for Bearings | NASA IMS Dataset | Random Forest + Docker + Streamlit**
@@ -7,87 +6,72 @@
 
 ## 📌 Project Overview
 
-Anomalitor is an end-to-end predictive maintenance system that detects early bearing failures using vibration data.  
-It combines **machine learning** (Random Forest), **signal processing** (FFT), **explainability** (SHAP), and **production-grade deployment** (FastAPI + PostgreSQL + Docker + Streamlit).
+Anomalitor is an end-to-end predictive maintenance system that detects early bearing failures using vibration data from the NASA IMS dataset.
 
-**Key results:**
-- ✅ **Precision: 1.00** – No false alarms
-- ✅ **Recall: 1.00** – No missed failures
-- ✅ **F1: 1.00** – Perfect balance
-- ✅ **Validated on 2,156 historical NASA records**
-- ✅ **Monte Carlo stability test (1000 iterations, 2% noise) – no degradation**
+It combines:
+- **Machine Learning** – Random Forest classifier
+- **Signal Processing** – FFT for frequency analysis
+- **Explainability** – SHAP for model interpretation
+- **Production-grade deployment** – FastAPI + PostgreSQL + Docker + Streamlit
 
 ---
 
 ## 🧠 How It Works
-
-```
 ┌─────────────────────────────────────────────────────────────────┐
-│  Vibration Data (NASA IMS Bearing Dataset)                     │
-│  → Feature Extraction (RMS, FFT, SHAP)                        │
-│  → Random Forest Model (Residual-based anomaly detection)     │
-│  → FastAPI (Serving predictions)                              │
-│  → PostgreSQL (Storing history)                               │
-│  → Streamlit Dashboard (Visualizing results)                  │
+│ Vibration Data (NASA IMS Bearing Dataset) │
+│ → Feature Extraction (RMS, FFT) │
+│ → Random Forest Model (Residual-based anomaly detection) │
+│ → FastAPI (Serving predictions) │
+│ → PostgreSQL (Storing history) │
+│ → Streamlit Dashboard (Visualizing results) │
 └─────────────────────────────────────────────────────────────────┘
-```
 
 ### Detection Logic
 
-1. **Feature Engineering:** Extract RMS from raw vibration signals.
+1. **Feature Engineering:** Extract RMS (Root Mean Square) from raw vibration signals.
 2. **Model Training:** Train Random Forest Regressor on **healthy** bearings only.
 3. **Prediction:** Model predicts expected `ratio = rms_b3 / rms_b1`.
 4. **Residual Calculation:** `residual = |actual_ratio - predicted_ratio|`.
-5. **Anomaly Decision:** If `residual > threshold (0.05)` → **Anomaly detected**.
+5. **Anomaly Decision:** If `residual > threshold` → **Anomaly detected**.
 
-- **Feature Engineering:** Extract RMS (Root Mean Square) from raw vibration signals – this captures the average vibration energy per bearing.
-- **Ratio Feature:** `ratio = RMS_B3 / RMS_B1` – a domain-specific feature that compares the suspicious bearing to a healthy reference.
+### Threshold Selection
 
-
-### Threshold Selection (1.2)
-
-- **Physical threshold:** `ratio > 1.2` → Bearing 3 vibrates 20% more than Bearing 1.
-- **Empirical validation:** 0 false positives, 0 false negatives on 2,156 records.
-- **Why 1.2?** It is the **lowest** threshold that still gives perfect separation.
+- The threshold was calibrated on the NASA IMS dataset.
+- Domain-specific feature: `ratio = RMS_B3 / RMS_B1` compares the suspicious bearing to a healthy reference.
 
 ---
 
-## 📊 Results & Validation
+## 📊 Results
 
 ### 1. Model Performance (Comparison)
 
 | Model      | Accuracy |
 |------------|----------|
-| **Random Forest** | **99.54%** |
-| LightGBM   | 99.31%    |
-| MLP        | 99.31%    |
-| XGBoost    | 99.07%    |
+| **Random Forest** | 99.54% |
+| LightGBM   | 99.31% |
+| MLP        | 99.31% |
+| XGBoost    | 99.07% |
 
-### 2. Anomaly Detection (Threshold = 1.2)
+### 2. Anomaly Detection
 
-| Metric        | Result |
-|---------------|--------|
-| Precision     | 1.00   |
-| Recall        | 1.00   |
-| F1            | 1.00   |
-| False Positives | 0    |
-| False Negatives | 0    |
+- The system detects anomalies when the residual exceeds the calibrated threshold.
+- Validated on historical NASA bearing records.
 
 ### 3. Failure Identification (FFT + BPFI)
 
-- **Bearing 3** failed due to **inner race defect**.
+- **Bearing 3** identified with inner race defect.
 - **BPFI ≈ 300 Hz** (calculated: `0.6 × 33.33 Hz × 15 balls`).
 - **FFT shows a clear peak at ~300 Hz** in the failed bearing.
 
 ### 4. Model Explainability (SHAP)
 
-- `rms_b3` contributes **84.5%** to the model's decision.
-- `rms_b1` contributes **15.5%**.
+- `rms_b3` contributes significantly to the model's decision.
+- SHAP analysis confirms the model's focus on the correct bearing.
 
 ### 5. Stability (Monte Carlo)
 
-- **1000 iterations** with **2% noise**.
-- Precision and Recall remained **1.00 ± 0.00** in all runs.
+- The model maintains stable performance under noise (2% injected noise, 1000 iterations).
+- Methodology documented for reproducibility.
 
 ---
 
@@ -111,21 +95,20 @@ It combines **machine learning** (Random Forest), **signal processing** (FFT), *
 - Docker & Docker Compose
 - Python 3.10+ (for local development)
 
-### Run with Docker (Production)
+### Run with Docker
 
 ```bash
 git clone https://github.com/eliyahudahan/anomalitor.git
 cd anomalitor
 docker compose up --build
-```
-
 Then open:
-- **API:** `http://localhost:8000`
-- **Dashboard:** `http://localhost:8501`
 
-### Test the API
+API: http://localhost:8000
 
-```bash
+Dashboard: http://localhost:8501
+
+Test the API
+bash
 # Health check
 curl http://localhost:8000/health
 
@@ -133,13 +116,8 @@ curl http://localhost:8000/health
 curl -X POST http://localhost:8000/predict \
   -H "Content-Type: application/json" \
   -d '{"rms_b1": 0.125, "rms_b3": 0.500}'
-```
-
----
-
-## 📂 Project Structure
-
-```
+📂 Project Structure
+'''text
 anomalitor/
 ├── app/
 │   └── main.py                # FastAPI endpoints
@@ -168,62 +146,40 @@ anomalitor/
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
-```
-
----
-
-## 📈 Dashboard Preview
-
+📈 Dashboard Preview
 The Streamlit dashboard includes:
-- 📊 **Real-time ratio chart** (B3/B1) with anomaly markers
-- 📋 **Recent anomalies table**
-- ⚖️ **Precision-Recall curve** (threshold optimization)
-- 🧠 **SHAP feature importance** (model explainability)
-- 🔬 **FFT spectrum** (healthy vs failed bearing)
-- 📍 **BPFI calculation** (inner race fault identification)
-- 🎲 **Monte Carlo box plots** (stability test)
-- 📊 **False Positives vs False Negatives** by threshold
 
----
+- 📊 Real-time ratio chart (B3/B1) with anomaly markers
+- 📋 Recent anomalies table
+- 🧠 SHAP feature importance (model explainability)
+- 🔬 FFT spectrum (healthy vs failed bearing)
+- 📍 BPFI calculation (inner race fault identification)
 
-## 🤝 Acknowledgments
+🤝 Acknowledgments
+NASA IMS Bearing Dataset – IMS Center, University of Cincinnati
 
-- **NASA IMS Bearing Dataset** – [IMS Center, University of Cincinnati](www.imscenter.net)
-- **Rexnord ZA-2115** bearing specifications
-- Open-source libraries: Scikit-learn, FastAPI, Streamlit, SQLAlchemy, Docker
+Rexnord ZA-2115 bearing specifications
 
----
+Open-source libraries: Scikit-learn, FastAPI, Streamlit, SQLAlchemy, Docker
 
-## 📝 Author
+📝 Author
+Eliyahu Dahan
+📧 framgangsrik747@gmail.com
+🔗 LinkedIn
+🐙 GitHub
 
-**Eliyahu Dahan**  
-📧 framgangsrik747@gmail.com  
-🔗 [LinkedIn](https://www.linkedin.com/in/eliyahu-dahan-684b22294/)  
-🐙 [GitHub](https://github.com/eliyahudahan/anomalitor)
+📅 Project Timeline
+Phase	Completed
+EDA + Feature Engineering	✅ 24.05
+Model Comparison	✅ 26.05
+Anomaly Detection	✅ 28.05
+PostgreSQL + FastAPI	✅ 31.05
+Docker + Streamlit	✅ 03.06
+BONUS: Lead Time, SHAP, FFT, Monte Carlo	✅ 13.06
+Empirical Validation	✅ 14.06
+Project Complete	✅ 17.06.2026
+🎯 Conclusion
+Anomalitor is a complete, explainable, and validated predictive maintenance system.
+It demonstrates end-to-end capability – from raw vibration data to a live dashboard – on the NASA IMS bearing dataset.
 
----
-
-## 📅 Project Timeline
-
-| Phase | Completed |
-|-------|-----------|
-| EDA + Feature Engineering | ✅ 24.05 |
-| Model Comparison | ✅ 26.05 |
-| Anomaly Detection | ✅ 28.05 |
-| PostgreSQL + FastAPI | ✅ 31.05 |
-| Docker + Streamlit | ✅ 03.06 |
-| BONUS: Lead Time, SHAP, FFT, Monte Carlo | ✅ 13.06 |
-| Empirical Validation | ✅ 14.06 |
-| **Project Complete** | ✅ **17.06.2026** |
-
----
-
-## 🎯 Conclusion
-
-Anomalitor is a **production-ready, explainable, and validated** predictive maintenance system.  
-It demonstrates **end-to-end capability** – from raw vibration data to a live dashboard – with **perfect accuracy** on real NASA bearing data.
-
-**Ready for industry deployment.** 🚀
-```
-
-
+Ready to run. 🚀
