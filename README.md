@@ -193,19 +193,19 @@ anomalitor/
 ├── requirements.txt
 └── README.md
 📈 Dashboard Preview
-The Streamlit dashboard provides an interactive view of:
+The Streamlit dashboard provides an interactive view of the NASA IMS dataset:
 
-📊 Ratio chart (B3/B1) with anomaly markers – updates from the database
+📊 Ratio chart (B3/B1) with anomaly markers
 
 📋 Recent anomalies table
 
-🧠 SHAP feature importance – model explainability
+🧠 SHAP feature importance
 
-🔬 FFT spectrum – healthy vs failed bearing comparison
+🔬 FFT spectrum (healthy vs failed bearing)
 
-📍 BPFI calculation – identifies inner race defect (Bearing 3)
+📍 BPFI calculation (inner race fault identification)
 
-Note: The dashboard reads from the PostgreSQL database populated with NASA IMS data. While it updates dynamically, it is not connected to live sensors. It demonstrates the full pipeline from data ingestion to visualization.
+Note: This dashboard reads from a PostgreSQL database populated with historical NASA IMS data. It is interactive (you can filter, explore, and analyze) but not live – no real-time sensor data is being ingested.
 
 🤝 Acknowledgments
 NASA IMS Bearing Dataset – IMS Center, University of Cincinnati
@@ -232,6 +232,16 @@ Empirical Validation	✅ 14.06
 Project Complete	✅ 17.06.2026
 🎯 Conclusion
 Anomalitor is a complete, explainable, and validated predictive maintenance system.
-It demonstrates end-to-end capability – from raw vibration data to a live dashboard – on the NASA IMS bearing dataset.
+It demonstrates end-to-end capability – from raw vibration data to an interactive dashboard – on the NASA IMS bearing dataset.
+
+What this project shows:
+
+Full pipeline: Data ingestion → Feature engineering → Model training → API → Database → Dashboard
+
+Model robustness: Monte Carlo test (1000 iterations, 2% noise) – stable performance
+
+Explainability: SHAP analysis + FFT spectrum + BPFI calculation – you can see why the model makes decisions
+
+Note: The model achieves perfect separation on the NASA IMS dataset, but this is not a claim of real-world performance. This is a controlled lab experiment that demonstrates my ability to build a complete pipeline from raw data to visualization.
 
 Ready to run. 🚀
