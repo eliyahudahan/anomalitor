@@ -1,3 +1,4 @@
+markdown
 # 🔧 Anomalitor – Bearing Health Monitoring
 
 **Predictive Maintenance System for Bearings | NASA IMS Dataset | Random Forest + Docker + Streamlit**
@@ -12,7 +13,7 @@ It combines:
 - **Machine Learning** – Random Forest classifier
 - **Signal Processing** – FFT for frequency analysis
 - **Explainability** – SHAP for model interpretation
-- **Production-grade deployment** – FastAPI + PostgreSQL + Docker + Streamlit
+- **Deployment** – FastAPI + PostgreSQL + Docker + Streamlit
 
 ---
 
@@ -25,6 +26,8 @@ It combines:
 │ → PostgreSQL (Storing history) │
 │ → Streamlit Dashboard (Visualizing results) │
 └─────────────────────────────────────────────────────────────────┘
+
+text
 
 ### Detection Logic
 
@@ -92,15 +95,25 @@ It combines:
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker & Docker Compose
+- Docker & Docker Compose (for containerized run)
 - Python 3.10+ (for local development)
 
-### Run with Docker
+---
+
+### Run with Docker (Recommended)
 
 ```bash
 git clone https://github.com/eliyahudahan/anomalitor.git
 cd anomalitor
 docker compose up --build
+What this starts:
+
+PostgreSQL (db) – stores bearing records
+
+FastAPI (api) – serves predictions on port 8000
+
+Streamlit (streamlit) – interactive dashboard on port 8501
+
 Then open:
 
 API: http://localhost:8000
@@ -116,8 +129,41 @@ curl http://localhost:8000/health
 curl -X POST http://localhost:8000/predict \
   -H "Content-Type: application/json" \
   -d '{"rms_b1": 0.125, "rms_b3": 0.500}'
+Run without Docker (Local Development)
+Why: For development, debugging, or when Docker is not available.
+
+Note: The db hostname only works inside Docker. For local development, you must change it to localhost.
+
+Step 1: Install dependencies
+
+bash
+pip install -r requirements.txt
+Step 2: Set up PostgreSQL locally
+
+bash
+# Install PostgreSQL (if not already installed)
+sudo apt install postgresql postgresql-contrib
+
+# Start PostgreSQL
+sudo systemctl start postgresql
+
+# Create database
+createdb anomalitor
+Step 3: Update dashboard.py
+Open dashboard.py and change line 12:
+
+python
+# Before:
+host="db"
+
+# After:
+host="localhost"
+Step 4: Run the dashboard
+
+bash
+streamlit run dashboard.py
 📂 Project Structure
-'''text
+text
 anomalitor/
 ├── app/
 │   └── main.py                # FastAPI endpoints
@@ -147,13 +193,19 @@ anomalitor/
 ├── requirements.txt
 └── README.md
 📈 Dashboard Preview
-The Streamlit dashboard includes:
+The Streamlit dashboard provides an interactive view of:
 
-- 📊 Real-time ratio chart (B3/B1) with anomaly markers
-- 📋 Recent anomalies table
-- 🧠 SHAP feature importance (model explainability)
-- 🔬 FFT spectrum (healthy vs failed bearing)
-- 📍 BPFI calculation (inner race fault identification)
+📊 Ratio chart (B3/B1) with anomaly markers – updates from the database
+
+📋 Recent anomalies table
+
+🧠 SHAP feature importance – model explainability
+
+🔬 FFT spectrum – healthy vs failed bearing comparison
+
+📍 BPFI calculation – identifies inner race defect (Bearing 3)
+
+Note: The dashboard reads from the PostgreSQL database populated with NASA IMS data. While it updates dynamically, it is not connected to live sensors. It demonstrates the full pipeline from data ingestion to visualization.
 
 🤝 Acknowledgments
 NASA IMS Bearing Dataset – IMS Center, University of Cincinnati
